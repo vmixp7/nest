@@ -1,22 +1,32 @@
-import { Controller, Get, Post, Query, Body, UseGuards, Request } from '@nestjs/common';
-import { AppService } from '../app.service';
+import { HttpException, Controller, Get, Put, Post, Query, Param, Body, UseGuards, Request } from '@nestjs/common';
+import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-class CreateUserDto {
-  name: string;
-  age: number;
-  email: string;
-}
+import { Users } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+
 @Controller('user')
 export class UserController {
-  constructor(private readonly appService: AppService) { }
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  findAll(@Query() param: any): string {
-    return this.appService.geUsers();
+  constructor(private readonly userService: UserService) { }
+
+  @Get()
+  async findAll(): Promise<Users[]> {
+    return this.userService.findAll();
+  }
+  @Get(':id')
+  async findOne(@Param('id') id: string): Promise<Users | null> {
+    return this.userService.findOne(parseInt(id, 10));
   }
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    // 现在 createUserDto 是类型安全的
-    return createUserDto;
+  async create(@Body() createUserDto: CreateUserDto): Promise<Users> {
+    return this.userService.create(createUserDto);
+  }
+  // @UseGuards(JwtAuthGuard)
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<Users> {
+    if (id === "") {
+      throw new HttpException('ID is required', 400);
+    }
+    return this.userService.update(+id, updateUserDto);
   }
 }
