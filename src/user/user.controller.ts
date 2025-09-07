@@ -1,15 +1,17 @@
-import { HttpException, Controller, Get, Put, Post, Query, Param, Body, UseGuards, Request } from '@nestjs/common';
+import { HttpException, Controller, Get, Put, Post, Query, Param, Body, UseGuards, Request, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Users } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { LoggingInterceptor } from '../common/interceptors/logging';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
   @Get()
+  @UseInterceptors(LoggingInterceptor)
   async findAll(): Promise<Users[]> {
     return this.userService.findAll();
   }
