@@ -12,6 +12,8 @@ async function bootstrap() {
     new FastifyAdapter()
   );
 
+  app.enableCors();
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // 自動移除 DTO 以外的屬性

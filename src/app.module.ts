@@ -8,6 +8,7 @@ import { AdminsMiddleware } from './admins/admins.middleware';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
+import { ApiModule } from './api/api.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { UserModule } from './user/user.module';
     OrderModule,
     AuthModule,
     UserModule,
+    ApiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
